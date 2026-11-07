@@ -1,0 +1,35 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - ./css:/usr/share/nginx/html/css:ro
+      - ./img:/usr/share/nginx/html/img:ro
+      - ./js:/usr/share/nginx/html/js:ro
+    networks:
+      - laboratorio
+
+  webtop:
+    image: lscr.io/linuxserver/webtop:ubuntu-xfce
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: America/Sao_Paulo
+    ports:
+      - "3001:3001"
+    volumes:
+      - webtop_config:/config
+    shm_size: "1gb"
+    depends_on:
+      - nginx
+    networks:
+      - laboratorio
+
+networks:
+  laboratorio:
+    driver: bridge
+
+volumes:
+  webtop_config:
